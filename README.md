@@ -4,7 +4,7 @@ A new Flutter project.
 
 ## Getting Started
 
-Displays images from a REST API. The built APK is available from the release section or on this link: 
+Displays images from a REST API. The built APK is available from the release section or on this link under the assets: [App](https://github.com/nightcrawler-/card-themes/releases/tag/v1.0.0) 
 
 ### License 
 ```
