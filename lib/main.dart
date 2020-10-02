@@ -25,7 +25,8 @@ class GalleryDemo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Image Gallery Example"),
+          title: Text("The Brand"),
+          backgroundColor: Colors.white,
         ),
         body: Center(
           child: FutureBuilder<List<String>>(
@@ -35,7 +36,7 @@ class GalleryDemo extends StatelessWidget {
                 return GridView.builder(
                     itemCount: snapshot.data.length,
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2),
+                        crossAxisCount: 3),
                     itemBuilder: (context, index) {
                       return Padding(
                           padding: EdgeInsets.all(5),
