@@ -36,6 +36,15 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
       appBar: AppBar(
         title: const Text('The Brand'),
         backgroundColor: Colors.white,
+        iconTheme: new IconThemeData(color: Colors.grey),
+      ),
+      drawer: Drawer(
+        child: SafeArea(
+          right: false,
+          child: Center(
+            child: Text('Drawer content'),
+          ),
+        ),
       ),
       body: Center(
         child: FutureBuilder<List<BrandTheme>>(
@@ -64,7 +73,6 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
                           child: Text(snapshot.data[index].title),
                         ),
                       ),
-                     
                     ]);
                   });
             }
