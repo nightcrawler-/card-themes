@@ -1,8 +1,6 @@
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'dart:io';
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
 
 void main() => runApp(MyApp());
 
@@ -16,28 +14,6 @@ class MyApp extends StatelessWidget {
       home: NavigationHomeScreen(),
     );
   }
-}
-
-Future<List<String>> fetchGalleryData() async {
-  try {
-    final response = await http
-        .get(
-            'https://kaleidosblog.s3-eu-west-1.amazonaws.com/flutter_gallery/data.json')
-        .timeout(Duration(seconds: 5));
-
-    if (response.statusCode == 200) {
-      return compute(parseGalleryData, response.body);
-    } else {
-      throw Exception('Failed to load');
-    }
-  } on SocketException catch (e) {
-    throw Exception('Failed to load');
-  }
-}
-
-List<String> parseGalleryData(String responseBody) {
-  final parsed = List<String>.from(json.decode(responseBody));
-  return parsed;
 }
 
 class NavigationHomeScreen extends StatefulWidget {
@@ -71,14 +47,25 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3),
                   itemBuilder: (context, index) {
-                    return Padding(
-                        padding: EdgeInsets.all(5),
-                        child: Container(
-                            decoration: new BoxDecoration(
-                                image: new DecorationImage(
-                                    image: new NetworkImage(
-                                        snapshot.data[index].pictureUrl),
-                                    fit: BoxFit.cover))));
+                    return Column(children: <Widget>[
+                      Padding(
+                          padding: EdgeInsets.all(5),
+                          child: Container(
+                              padding: EdgeInsets.all(46),
+                              decoration: new BoxDecoration(
+                                  image: new DecorationImage(
+                                      image: new NetworkImage(
+                                          snapshot.data[index].pictureUrl),
+                                      fit: BoxFit.cover)))),
+                      SizedBox(
+                        width: 100,
+                        child: FittedBox(
+                          fit: BoxFit.fitWidth,
+                          child: Text(snapshot.data[index].title),
+                        ),
+                      ),
+                     
+                    ]);
                   });
             }
             return Center(child: CircularProgressIndicator());
@@ -118,13 +105,9 @@ Future<List<BrandTheme>> fetchImages() async {
       'http://itsthebrand.com/brandAPI/mode.php?mode=getThemes&userid=22&page=1');
 
   if (response.statusCode == 200) {
-    print('xxres: ' + response.statusCode.toString());
-
     return parseBrandThemeData(response.body);
-    //List of images, somehow. loop through and create list of brand theme?
+    //List of images, somehow. loop through and create list of brand themes?
   } else {
-    // If the server did not return a 200 OK response,
-    // then throw an exception.
     throw Exception('Failed to load content');
   }
 }
@@ -133,10 +116,8 @@ List<BrandTheme> parseBrandThemeData(String responseBody) {
   // get json array with brand themes
   print('parsing brand theme response c');
   var themes = json.decode(responseBody)['themes'] as List;
-  //print(themes);
   List<BrandTheme> brandThemes =
       themes.map((themeJson) => BrandTheme.fromJson(themeJson)).toList();
-  print(brandThemes);
   return brandThemes;
 }
 
