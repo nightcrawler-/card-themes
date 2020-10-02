@@ -62,8 +62,8 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
         backgroundColor: Colors.white,
       ),
       body: Center(
-        child: FutureBuilder<List<String>>(
-          future: fetchGalleryData(),
+        child: FutureBuilder<List<BrandTheme>>(
+          future: fetchImages(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return GridView.builder(
@@ -76,8 +76,8 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
                         child: Container(
                             decoration: new BoxDecoration(
                                 image: new DecorationImage(
-                                    image:
-                                        new NetworkImage(snapshot.data[index]),
+                                    image: new NetworkImage(
+                                        snapshot.data[index].pictureUrl),
                                     fit: BoxFit.cover))));
                   });
             }
@@ -112,3 +112,47 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
     );
   }
 }
+
+Future<List<BrandTheme>> fetchImages() async {
+  final response = await http.get(
+      'http://itsthebrand.com/brandAPI/mode.php?mode=getThemes&userid=22&page=1');
+
+  if (response.statusCode == 200) {
+    print('xxres: ' + response.statusCode.toString());
+
+    return parseBrandThemeData(response.body);
+    //List of images, somehow. loop through and create list of brand theme?
+  } else {
+    // If the server did not return a 200 OK response,
+    // then throw an exception.
+    throw Exception('Failed to load content');
+  }
+}
+
+List<BrandTheme> parseBrandThemeData(String responseBody) {
+  // get json array with brand themes
+  print('parsing brand theme response c');
+  var themes = json.decode(responseBody)['themes'] as List;
+  //print(themes);
+  List<BrandTheme> brandThemes =
+      themes.map((themeJson) => BrandTheme.fromJson(themeJson)).toList();
+  print(brandThemes);
+  return brandThemes;
+}
+
+class BrandTheme {
+  final String title;
+  final String pictureUrl;
+
+  BrandTheme({this.title, this.pictureUrl});
+
+  factory BrandTheme.fromJson(Map<String, dynamic> json) {
+    return BrandTheme(
+      title: json['title'],
+      pictureUrl: BASE_URL + json['picture'],
+    );
+  }
+}
+
+const String BASE_URL =
+    "https://itsthebrand.com/taswira.php?width=500&height=500&quality=100&cropratio=1:1&image=/v/uploads/gallery/";
