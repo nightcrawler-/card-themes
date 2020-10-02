@@ -51,9 +51,10 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('The Brand'),
+        backgroundColor: Colors.white,
       ),
       body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
+        child: ImageGrid(),
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
@@ -76,9 +77,33 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.green,
-        unselectedItemColor: Colors.black,
+        unselectedItemColor: Colors.grey,
         onTap: _onItemTapped,
       ),
     );
+  }
+}
+
+class ImageGrid extends StatefulWidget {
+  @override
+  _ImageGridState createState() => _ImageGridState();
+}
+
+class _ImageGridState extends State<ImageGrid> {
+  @override
+  Widget build(BuildContext context) {
+    return GridView.count(
+        // Create a grid with 2 columns. If you change the scrollDirection to
+        // horizontal, this produces 2 rows.
+        crossAxisCount: 3,
+        // Generate 100 widgets that display their index in the List.
+        children: List.generate(100, (index) {
+          return Center(
+            child: Text(
+              'Item $index',
+              style: Theme.of(context).textTheme.headline5,
+            ),
+          );
+        }));
   }
 }
